@@ -329,7 +329,7 @@ function Invoke-PIPImageFlip
         [ImageProcessor.ImageFactory]
         $InputObject,
 
-        [Parameter(Mandatory,Position=1)]
+        [Parameter()]
         [switch]
         $Vertically
     )
