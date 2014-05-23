@@ -233,7 +233,7 @@ function Set-PIPQuality
             Write-Warning "This method will only effect the output quality of jpeg images."
         }
 
-        $_.Quality($Quality) | Write-Output
+        Write-Output -InputObject $_.Quality($Quality)
     }
 }
 
@@ -287,6 +287,9 @@ function Add-PIPFilter
    Flips the current image either horizontally or vertically.
 .DESCRIPTION
    Flips the current image either horizontally or vertically.
+.PARAMETER InputObject
+   Specifies the objects to send down the pipeline. Enter a variable that contains the objects, or type a command or
+   expression that gets the objects.
 .PARAMETER Vertically
    Whether to flip the image vertically.
 .EXAMPLE
@@ -315,9 +318,42 @@ function Invoke-PIPImageFlip
 
 <#
 .Synopsis
+   Resets the current image to its original loaded state.
+.DESCRIPTION
+   Resets the current image to its original loaded state.
+.PARAMETER InputObject
+   Specifies the objects to send down the pipeline. Enter a variable that contains the objects, or type a command or
+   expression that gets the objects.
+.PARAMETER Vertically
+   Whether to flip the image vertically.
+.EXAMPLE
+   Get-ImageStream Capture.png | Invoke-PIPImageFlip
+#>
+function Reset-PIPImage
+{
+    [CmdletBinding()]
+    [OutputType([ImageProcessor.ImageFactory])]
+    Param
+    (
+        [Parameter(Mandatory,ValueFromPipeline,Position=0)]
+        [ImageProcessor.ImageFactory]
+        $InputObject
+    )
+
+    Process
+    {
+        Write-Output -InputObject $_.Reset()
+    }
+}
+
+<#
+.Synopsis
    Saves the current image to the specified file path. 
 .DESCRIPTION
    Saves the current image to the specified file path.
+.PARAMETER InputObject
+   Specifies the objects to send down the pipeline. Enter a variable that contains the objects, or type a command or
+   expression that gets the objects.
 .PARAMETER Path
    The path to save the image to.
 .EXAMPLE

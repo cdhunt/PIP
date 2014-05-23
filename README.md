@@ -9,6 +9,8 @@ This PowerShell module wraps [James M South's ImageProcessor](http://jimbobsquar
 > 
 > It's lighting fast, extensible, easy to use, comes bundled with some great features and is fully open source.
 
+This is not the first image manipulation module for PowerShell, but it's fast, functional and a good example of how to expose functionality from a .Net library via PowerShell.
+
 Install
 ===
 
