@@ -46,9 +46,16 @@ function Get-PIPImage
 
     Process
     {
-        $imageFactory = New-Object ImageProcessor.ImageFactory
+		if ([string]::IsNullOrWhiteSpace((Split-Path $Path)) -or (Split-Path $Path) -eq '.')
+		{
+			$Path = Join-Path -Path $pwd -ChildPath $Path
+		}
 
-        $null = $imageFactory.Load($_)
+		Write-Debug $Path
+
+        $imageFactory = New-Object ImageProcessor.ImageFactory
+		
+		$null = $imageFactory.Load($Path)
 
         Write-Output -InputObject $imageFactory
     }
@@ -121,9 +128,9 @@ function Set-PIPImageSize
 
     Begin
     {
-        $layer = New-Object ImageProcessor.Imaging.ResizeLayer
+		$size = New-Object Drawing.Size($Width, $Height)
 
-        $layer.Size = (New-Object Drawing.Size($Width, $Height))
+        $layer = New-Object ImageProcessor.Imaging.ResizeLayer($size)
 
         if ($PSBoundParameters["ResizeMode"])
         {
@@ -147,7 +154,7 @@ function Set-PIPImageSize
     {
         if ($MaintainAspect)
         {
-            Write-Output -InputObject $_.Constrain($layer)
+            Write-Output -InputObject $_.Constrain($size)
         }
         else
         {
@@ -377,10 +384,12 @@ function Save-PIPImage
     Process
     {
 		# ImageProcessor.ImageFactory.Save() Requires an aboslute path
-		if ([string]::IsNullOrWhiteSpace((Split-Path $Path)))
+		if ([string]::IsNullOrWhiteSpace((Split-Path $Path)) -or (Split-Path $Path) -eq '.')
 		{
 			$Path = Join-Path -Path $pwd -ChildPath $Path
 		}
+
+		Write-Debug $Path
 		
 		Try
 		{
@@ -391,6 +400,6 @@ function Save-PIPImage
 			Write-Error -ErrorRecord $_
 		}
         
-        Write-Output -InputObject (Get-Item $output.ImagePath)
+        Write-Output -InputObject (Get-Item $Path)
     }
 }
