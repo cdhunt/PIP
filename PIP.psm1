@@ -1,3 +1,24 @@
+$targetPath = $PSScriptRoot
+
+$dll = dir $targetPath -Recurse ImageProcessor.dll
+
+if(!$dll) {
+    
+    if(!(Get-Command nuget -ErrorAction SilentlyContinue)) {
+        Write-Warning "Please install nuget http://www.nuget.org/"
+        return
+    }
+
+    pushd
+    cd $targetPath
+    nuget install ImageProcessor
+    popd
+}
+
+$dll = dir $targetPath -Recurse ImageProcessor.dll
+
+Add-Type -Path $dll.FullName
+
 <#
 .Synopsis
    Load an Image file from disk.
