@@ -279,13 +279,30 @@ function Add-PIPFilter
         $InputObject,
 
         [Parameter(Mandatory,Position=1)]
-        [ImageProcessor.Imaging.Filters.MatrixFilters]
+		[ValidateSet("BlackWhite","Comic","Lomograph","GreyScale","Polaroid","Sepia","gotham","hisatch","losatch","invert")]
+        [string]
         $Filter
     )
 
     Process
     {
-        Write-Output -InputObject $_.Filter($Filter)
+		
+		switch ($Filter.ToLower())
+		{
+			'blackwhite'	{$filterObject = [ImageProcessor.Imaging.Filters.MatrixFilters]::BlackWhite }
+			'comic'			{$filterObject = [ImageProcessor.Imaging.Filters.MatrixFilters]::Comic }
+			'lomograph'		{$filterObject = [ImageProcessor.Imaging.Filters.MatrixFilters]::Lomograph }
+			'greyscale'		{$filterObject = [ImageProcessor.Imaging.Filters.MatrixFilters]::GreyScale }
+			'polaroid'		{$filterObject = [ImageProcessor.Imaging.Filters.MatrixFilters]::Polaroid }
+			'sepia'			{$filterObject = [ImageProcessor.Imaging.Filters.MatrixFilters]::Sepia }
+			'gotham'		{$filterObject = [ImageProcessor.Imaging.Filters.MatrixFilters]::Gotham }
+			'hisatch'		{$filterObject = [ImageProcessor.Imaging.Filters.MatrixFilters]::HiSatch }
+			'losatch'		{$filterObject = [ImageProcessor.Imaging.Filters.MatrixFilters]::LoSatch }
+			'invert'		{$filterObject = [ImageProcessor.Imaging.Filters.MatrixFilters]::Invert }
+			Default {}
+		}
+
+        Write-Output -InputObject $_.Filter($filterObject)
     }
 }
 
