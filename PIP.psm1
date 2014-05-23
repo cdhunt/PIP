@@ -165,6 +165,119 @@ function Set-PIPImageSize
 
 <#
 .Synopsis
+   Change the size of the image.
+.DESCRIPTION
+   Change the size of the image to the either the absolute height and width 
+   or constrained to the height and width but maintaining aspect ratio.
+.PARAMETER InputObject
+   Specifies the objects to send down the pipeline. Enter a variable that contains the objects, or type a command or
+   expression that gets the objects.
+.PARAMETER Text
+   The text to write to the image.
+.PARAMETER Color
+   The System.Drawing.Color to render the text.
+.PARAMETER Font
+   The name of the font to apply to the text.
+.PARAMETER FontSize
+   The size of the text in pixels.
+.PARAMETER Style
+   The System.Drawing.FontStyle to apply to the text.
+.PARAMETER Opacity
+   The opacity of the text.
+.PARAMETER X
+   The X coordiante determining the position within the current image to render the text.
+.PARAMETER Y
+   The Y coordiante determining the position within the current image to render the text.
+.EXAMPLE
+   $images dir *.png | Get-PIPImage | Add-PIPWatermark -Text "Copywrite Bob 2014"
+#>
+function Add-PIPWatermark
+{
+    [CmdletBinding()]
+    [OutputType([ImageProcessor.ImageFactory])]
+    Param
+    (
+        [Parameter(Mandatory,ValueFromPipeline,Position=0)]
+        [ImageProcessor.ImageFactory]
+        $InputObject,
+
+        [Parameter(Mandatory,Position=1)]
+        [string]
+        $Text,
+
+        [Parameter(Position=2)]
+        [System.Drawing.Color]
+        $Color,
+
+        [Parameter(Position=3)]
+        [string]
+        $Font,
+
+        [Parameter(Position=4)]
+        [int]
+        $FontSize,
+
+        [Parameter(Position=5)]
+        [System.Drawing.FontStyle]
+        $Style,
+
+        [Parameter(Position=6)]
+		[ValidateRange(0,100)]
+        [int]
+        $Opacity,
+
+		[Parameter(Position=7)]
+        [int]
+        $X,
+		
+		[Parameter(Position=8)]
+        [int]
+        $Y
+    )
+
+    Begin
+    {
+        $layer = New-Object ImageProcessor.Imaging.TextLayer
+
+        if ($PSBoundParameters["Text"])
+        {
+            $layer.Text = $Text
+        }
+        if ($PSBoundParameters["Color"])
+        {
+            $layer.Color = $Color
+        }
+        if ($PSBoundParameters["Font"])
+        {
+            $layer.Font = $Font
+        }
+        if ($PSBoundParameters["FontSize"])
+        {
+            $layer.FontSize = $FontSize
+        }
+		if ($PSBoundParameters["Style"])
+        {
+            $layer.Style = $Style
+        }
+		if ($PSBoundParameters["Opacity"])
+        {
+            $layer.Opacity = $Opacity
+        }
+		if ($PSBoundParameters["X"] -and $PSBoundParameters["Y"])
+        {
+			$point = New-Object System.Drawing.Point($X, $Y)
+            $layer.Point = $point
+        }		
+    }
+
+    Process
+    {
+        Write-Output -InputObject $_.Watermark($layer)
+    }
+}
+
+<#
+.Synopsis
    Sets the output format of the current image
 .DESCRIPTION
    Sets the output format of the current image to the matching System.Drawing.Imaging.ImageFormat
@@ -362,37 +475,39 @@ function Add-PIPRoundedCorners
         $BottomRight
     )
 
-    Process
-    {
-	
-		$roundedCornerLayer = New-Object ImageProcessor.Imaging.RoundedCornerLayer
+	Begin
+	{
+		$layer = New-Object ImageProcessor.Imaging.RoundedCornerLayer
 
 		if ($PSBoundParameters["Radius"])
 		{
-			$roundedCornerLayer.Radius = $Radius
+			$layer.Radius = $Radius
 		}
 		if ($PSBoundParameters["BackgroundColor"])
 		{
-			$roundedCornerLayer.BackgroundColor = $BackgroundColor
+			$layer.BackgroundColor = $BackgroundColor
 		}
 		if ($TopLeft)
 		{
-			$roundedCornerLayer.TopLeft = $TopLeft
+			$layer.TopLeft = $TopLeft
 		}
 		if ($TopRight)
 		{
-			$roundedCornerLayer.TopRight = $TopRight
+			$layer.TopRight = $TopRight
 		}
 		if ($BottomLeft)
 		{
-			$roundedCornerLayer.BottomLeft = $BottomLeft
+			$layer.BottomLeft = $BottomLeft
 		}
 		if ($BottomRight)
 		{
-			$roundedCornerLayer.BottomRight = $BottomRight
+			$layer.BottomRight = $BottomRight
 		}
+	}
 
-        Write-Output -InputObject $_.RoundedCorners($roundedCornerLayer)
+    Process
+    {		
+        Write-Output -InputObject $_.RoundedCorners($layer)
     }
 }
 
