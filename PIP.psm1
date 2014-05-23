@@ -308,6 +308,96 @@ function Add-PIPFilter
 
 <#
 .Synopsis
+   Adds rounded corners to the current image.
+.DESCRIPTION
+   Adds rounded corners to the current image.
+.PARAMETER Radius
+   The radius at which the corner will be rounded.
+.PARAMETER TopLeft
+   A value indicating whether top left corners are to be added.
+.PARAMETER TopRight
+   A value indicating whether top right corners are to be added.
+.PARAMETER BottomLeft
+   A value indicating whether bottom left corners are to be added.
+.PARAMETER BottomRight
+   A value indicating whether bottom right corners are to be added.
+.PARAMETER BackgroundColor
+   The System.Drawing.Color to set as the background color. Used primarily for image formats that do not support transparency.
+.EXAMPLE
+   Get-ImageStream Capture.png | Add-PIPRoundedCorners
+#>
+function Add-PIPRoundedCorners
+{
+    [CmdletBinding()]
+    [OutputType([ImageProcessor.ImageFactory])]
+    Param
+    (
+        [Parameter(Mandatory,ValueFromPipeline,Position=0)]
+        [ImageProcessor.ImageFactory]
+        $InputObject,
+
+        [Parameter(Position=1)]
+		[ValidateRange(0,360)]
+        [int]
+        $Radius,
+
+		[Parameter(Position=2)]
+        [System.Drawing.Color]
+        $BackgroundColor,
+
+        [Parameter()]
+        [switch]
+        $TopLeft,
+
+        [Parameter()]
+        [switch]
+        $TopRight,
+
+        [Parameter()]
+        [switch]
+        $BottomLeft,
+
+        [Parameter()]
+        [switch]
+        $BottomRight
+    )
+
+    Process
+    {
+	
+		$roundedCornerLayer = New-Object ImageProcessor.Imaging.RoundedCornerLayer
+
+		if ($PSBoundParameters["Radius"])
+		{
+			$roundedCornerLayer.Radius = $Radius
+		}
+		if ($PSBoundParameters["BackgroundColor"])
+		{
+			$roundedCornerLayer.BackgroundColor = $BackgroundColor
+		}
+		if ($TopLeft)
+		{
+			$roundedCornerLayer.TopLeft = $TopLeft
+		}
+		if ($TopRight)
+		{
+			$roundedCornerLayer.TopRight = $TopRight
+		}
+		if ($BottomLeft)
+		{
+			$roundedCornerLayer.BottomLeft = $BottomLeft
+		}
+		if ($BottomRight)
+		{
+			$roundedCornerLayer.BottomRight = $BottomRight
+		}
+
+        Write-Output -InputObject $_.RoundedCorners($roundedCornerLayer)
+    }
+}
+
+<#
+.Synopsis
    Flips the current image either horizontally or vertically.
 .DESCRIPTION
    Flips the current image either horizontally or vertically.
