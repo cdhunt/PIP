@@ -30,7 +30,7 @@ Copyright = '© 2014 All rights reserved.'
 Description = 'Posh Wrapper for the .Net ImageProcessor library'
 
 # Minimum version of the Windows PowerShell engine required by this module
-PowerShellVersion = 'v3'
+PowerShellVersion = '3.0'
 
 # Name of the Windows PowerShell host required by this module
 # PowerShellHostName = ''
@@ -42,7 +42,7 @@ PowerShellVersion = 'v3'
 # DotNetFrameworkVersion = ''
 
 # Minimum version of the common language runtime (CLR) required by this module
-# CLRVersion = ''
+CLRVersion = '4.0'
 
 # Processor architecture (None, X86, Amd64) required by this module
 # ProcessorArchitecture = ''
