@@ -462,6 +462,34 @@ function Reset-PIPImage
 
 <#
 .Synopsis
+   Adds a vignette image effect to the current image.
+.DESCRIPTION
+   Adds a vignette image effect to the current image.
+.PARAMETER InputObject
+   Specifies the objects to send down the pipeline. Enter a variable that contains the objects, or type a command or
+   expression that gets the objects.
+.EXAMPLE
+   Get-ImageStream Capture.png | Invoke-PIPVignette
+#>
+function Add-PIPVignette
+{
+    [CmdletBinding()]
+    [OutputType([ImageProcessor.ImageFactory])]
+    Param
+    (
+        [Parameter(Mandatory,ValueFromPipeline,Position=0)]
+        [ImageProcessor.ImageFactory]
+        $InputObject
+    )
+
+    Process
+    {
+        Write-Output -InputObject $_.Vignette()
+    }
+}
+
+<#
+.Synopsis
    Saves the current image to the specified file path. 
 .DESCRIPTION
    Saves the current image to the specified file path.
