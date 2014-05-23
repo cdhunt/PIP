@@ -595,6 +595,41 @@ function Set-PIPContrast
 
 <#
 .Synopsis
+   Changes the saturation of the current image.
+.DESCRIPTION
+   Changes the saturation of the current image.
+.PARAMETER InputObject
+   Specifies the objects to send down the pipeline. Enter a variable that contains the objects, or type a command or
+   expression that gets the objects.
+.PARAMETER Percentage
+	The percentage by which to alter the images saturation. Any integer between 0 and 100.
+.EXAMPLE
+   Get-ImageStream Capture.png | Invoke-PIPSaturation -Percentage 50
+#>
+function Set-PIPSaturation
+{
+    [CmdletBinding()]
+    [OutputType([ImageProcessor.ImageFactory])]
+    Param
+    (
+        [Parameter(Mandatory,ValueFromPipeline,Position=0)]
+        [ImageProcessor.ImageFactory]
+        $InputObject,
+
+		[Parameter(Mandatory,Position=1)]
+		[ValidateRange(0,100)]
+		[int]
+		$Percentage
+    )
+
+    Process
+    {
+        Write-Output -InputObject $_.Saturation($Percentage)
+    }
+}
+
+<#
+.Synopsis
    Saves the current image to the specified file path. 
 .DESCRIPTION
    Saves the current image to the specified file path.
