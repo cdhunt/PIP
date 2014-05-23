@@ -239,6 +239,51 @@ function Set-PIPQuality
 
 <#
 .Synopsis
+   Applies a filter to the current image.
+.DESCRIPTION
+   Applies a filter to the current image. Available filters are:
+
+   blackwhite
+   comic
+   lomograph
+   greyscale
+   polaroid
+   sepia
+   gotham
+   hisatch
+   losatch
+   invert
+.PARAMETER InputObject
+   Specifies the objects to send down the pipeline. Enter a variable that contains the objects, or type a command or
+   expression that gets the objects.
+.PARAMETER Filter
+   The name of the filter to add to the image.
+.EXAMPLE
+   Get-ImageStream Capture.png | Add-PIPFilter -Filter blackwhite
+#>
+function Add-PIPFilter
+{
+    [CmdletBinding()]
+    [OutputType([ImageProcessor.ImageFactory])]
+    Param
+    (
+        [Parameter(Mandatory,ValueFromPipeline,Position=0)]
+        [ImageProcessor.ImageFactory]
+        $InputObject,
+
+        [Parameter(Mandatory,Position=1)]
+        [ImageProcessor.Imaging.Filters.MatrixFilters]
+        $Filter
+    )
+
+    Process
+    {
+        Write-Output -InputObject $_.Filter($Filter)
+    }
+}
+
+<#
+.Synopsis
    Flips the current image either horizontally or vertically.
 .DESCRIPTION
    Flips the current image either horizontally or vertically.
