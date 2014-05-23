@@ -1,12 +1,14 @@
 <#
 .Synopsis
-   Short description
+   Load an Image file from disk.
 .DESCRIPTION
-   Long description
+   Load an Image file from disk in preparation for processing. Always call this function first.
+.PARAMETER Path
+   The absolute path to the image to load.
 .EXAMPLE
-   Example of how to use this cmdlet
+   Get-PIPImage -Path myphoto.jpeg
 .EXAMPLE
-   Another example of how to use this cmdlet
+   $images dir *.png | Get-PIPImage
 #>
 function Get-PIPImage
 {
@@ -33,13 +35,29 @@ function Get-PIPImage
 
 <#
 .Synopsis
-   Short description
+   Change the size of the image.
 .DESCRIPTION
-   Long description
+   Change the size of the image to the either the absolute height and width 
+   or constrained to the height and width but maintaining aspect ratio.
+.PARAMETER InputObject
+   Specifies the objects to send down the pipeline. Enter a variable that contains the objects, or type a command or
+   expression that gets the objects.
+.PARAMETER Width
+   The width to set the image to.
+.PARAMETER Height
+   The height to set the image to.
+.PARAMETER ResizeMode
+   The ImageProcessor.Imaging.ResizeMode to apply to resized image.
+.PARAMETER AnchorPosition
+   The ImageProcessor.Imaging.AnchorPosition to apply to resized image.
+.PARAMETER BackgroundColor
+   The System.Drawing.Color to set as the background color. Used primarily for image formats that do not support transparency.
+.PARAMETER UpScale
+   Whether to allow up-scaling of images. (Default true)
 .EXAMPLE
-   Example of how to use this cmdlet
+   Get-ImageStream Capture.png | Set-ImageSize -Width 100 -Height 100
 .EXAMPLE
-   Another example of how to use this cmdlet
+   $images dir *.png | Get-PIPImage | Set-ImageSize -Width 200 -Height 100 -MaintainAspect
 #>
 function Set-PIPImageSize
 {
@@ -47,7 +65,6 @@ function Set-PIPImageSize
     [OutputType([ImageProcessor.ImageFactory])]
     Param
     (
-        # Param1 help description
         [Parameter(Mandatory,ValueFromPipeline,Position=0)]
         [ImageProcessor.ImageFactory]
         $InputObject,
@@ -120,13 +137,18 @@ function Set-PIPImageSize
 
 <#
 .Synopsis
-   Short description
+   Sets the output format of the current image
 .DESCRIPTION
-   Long description
+   Sets the output format of the current image to the matching System.Drawing.Imaging.ImageFormat
+.PARAMETER InputObject
+   Specifies the objects to send down the pipeline. Enter a variable that contains the objects, or type a command or
+   expression that gets the objects.
+.PARAMETER Format
+   The System.Drawing.Imaging.ImageFormat to set the image to.
+.PARAMETER IndexedFormat
+   Whether the pixel format of the image should be indexed. Used for generating Png8 images.
 .EXAMPLE
-   Example of how to use this cmdlet
-.EXAMPLE
-   Another example of how to use this cmdlet
+   Get-ImageStream Capture.png | Set-PIPImageFormat -Format Jpeg
 #>
 function Set-PIPImageFormat
 {
@@ -134,7 +156,6 @@ function Set-PIPImageFormat
     [OutputType([ImageProcessor.ImageFactory])]
     Param
     (
-        # Param1 help description
         [Parameter(Mandatory,ValueFromPipeline,Position=0)]
         [ImageProcessor.ImageFactory]
         $InputObject,
@@ -144,6 +165,7 @@ function Set-PIPImageFormat
         $Format,
 
         [Parameter(Position=2)]
+		[switch]
         $IndexedFormat
     )
 
@@ -156,13 +178,16 @@ function Set-PIPImageFormat
 
 <#
 .Synopsis
-   Short description
+   Alters the output quality of the current image.
 .DESCRIPTION
-   Long description
+   Alters the output quality of the current image. This method will only effect the output quality of jpeg images.
+.PARAMETER InputObject
+   Specifies the objects to send down the pipeline. Enter a variable that contains the objects, or type a command or
+   expression that gets the objects.
+.PARAMETER Quality
+   The percentage by which to alter the images quality. Any integer between 0 and 100.
 .EXAMPLE
-   Example of how to use this cmdlet
-.EXAMPLE
-   Another example of how to use this cmdlet
+   Get-ImageStream Capture.png | Set-PIPImageFormat -Format Jpeg | Set-PIPQuality -Quality 70
 #>
 function Set-PIPQuality
 {
@@ -170,20 +195,18 @@ function Set-PIPQuality
     [OutputType([ImageProcessor.ImageFactory])]
     Param
     (
-        # Param1 help description
         [Parameter(Mandatory,ValueFromPipeline,Position=0)]
         [ImageProcessor.ImageFactory]
         $InputObject,
 
         [Parameter(Mandatory,Position=1)]
-        [ValidateRange(1,100)]
+        [ValidateRange(0,100)]
         [int]
         $Quality
     )
 
     Process
     {
-
         if ($_.MimeType -ne 'image/jpeg')
         {
             Write-Warning "This method will only effect the output quality of jpeg images."
@@ -195,13 +218,13 @@ function Set-PIPQuality
 
 <#
 .Synopsis
-   Short description
+   Flips the current image either horizontally or vertically.
 .DESCRIPTION
-   Long description
+   Flips the current image either horizontally or vertically.
+.PARAMETER Vertically
+   Whether to flip the image vertically.
 .EXAMPLE
-   Example of how to use this cmdlet
-.EXAMPLE
-   Another example of how to use this cmdlet
+   Get-ImageStream Capture.png | Invoke-PIPImageFlip
 #>
 function Invoke-PIPImageFlip
 {
@@ -209,7 +232,6 @@ function Invoke-PIPImageFlip
     [OutputType([ImageProcessor.ImageFactory])]
     Param
     (
-        # Param1 help description
         [Parameter(Mandatory,ValueFromPipeline,Position=0)]
         [ImageProcessor.ImageFactory]
         $InputObject,
@@ -227,13 +249,13 @@ function Invoke-PIPImageFlip
 
 <#
 .Synopsis
-   Save the edited 
+   Saves the current image to the specified file path. 
 .DESCRIPTION
-   Long description
+   Saves the current image to the specified file path.
+.PARAMETER Path
+   The path to save the image to.
 .EXAMPLE
-   Example of how to use this cmdlet
-.EXAMPLE
-   Another example of how to use this cmdlet
+   Get-ImageStream C:\temp\Capture.PNG | Set-ImageSize -Width 100 -Height 100 | Save-Image -Path c:\temp\captureresize.png 
 #>
 function Save-PIPImage
 {
@@ -241,7 +263,6 @@ function Save-PIPImage
     [OutputType([IO.FileInfo])]
     Param
     (
-        # Param1 help description
         [Parameter(Mandatory,ValueFromPipeline,Position=0)]
         [ImageProcessor.ImageFactory]
         $InputObject,
