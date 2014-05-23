@@ -490,6 +490,41 @@ function Add-PIPVignette
 
 <#
 .Synopsis
+   Changes the brightness of the current image.
+.DESCRIPTION
+   Changes the brightness of the current image.
+.PARAMETER InputObject
+   Specifies the objects to send down the pipeline. Enter a variable that contains the objects, or type a command or
+   expression that gets the objects.
+.PARAMETER Percentage
+	The percentage by which to alter the images brightness. Any integer between 0 and 100.
+.EXAMPLE
+   Get-ImageStream Capture.png | Invoke-PIPBrightness -Percentage 50
+#>
+function Set-PIPBrightness
+{
+    [CmdletBinding()]
+    [OutputType([ImageProcessor.ImageFactory])]
+    Param
+    (
+        [Parameter(Mandatory,ValueFromPipeline,Position=0)]
+        [ImageProcessor.ImageFactory]
+        $InputObject,
+
+		[Parameter(Mandatory,Position=1)]
+		[ValidateRange(0,100)]
+		[int]
+		$Percentage
+    )
+
+    Process
+    {
+        Write-Output -InputObject $_.Brightness($Percentage)
+    }
+}
+
+<#
+.Synopsis
    Saves the current image to the specified file path. 
 .DESCRIPTION
    Saves the current image to the specified file path.
