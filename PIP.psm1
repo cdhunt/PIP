@@ -188,6 +188,8 @@ function Set-PIPImageSize
    The X coordiante determining the position within the current image to render the text.
 .PARAMETER Y
    The Y coordiante determining the position within the current image to render the text.
+.PARAMETER DropShadow
+   Whether to apply a drop shadow to the text.
 .EXAMPLE
    $images dir *.png | Get-PIPImage | Add-PIPWatermark -Text "Copywrite Bob 2014"
 #>
@@ -232,7 +234,11 @@ function Add-PIPWatermark
 		
 		[Parameter(Position=8)]
         [int]
-        $Y
+        $Y,
+
+		[Parameter()]
+        [switch]
+        $DropShadow
     )
 
     Begin
@@ -267,7 +273,11 @@ function Add-PIPWatermark
         {
 			$point = New-Object System.Drawing.Point($X, $Y)
             $layer.Point = $point
-        }		
+        }
+		if ($DropShadow)
+		{
+			$layer.DropShadow = $DropShadow
+		}
     }
 
     Process
