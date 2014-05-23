@@ -19,3 +19,15 @@ To install in your personal modules folder (e.g. ~\Documents\WindowsPowerShell\M
 ```powershell
 iex (new-object System.Net.WebClient).DownloadString('https://raw.github.com/cdhunt/PIP/master/Install.ps1')
 ```
+
+Examples
+===
+
+```powershell
+Get-PIPImage source.bmp | 
+	Set-ImageSize -Width 100 -Height 100 | 
+	Add-PIPFilter -Filter blackwhite |
+	Add-PIPRoundedCorners |
+	Set-PIPFormat -Format Jpeg |
+	Save-PIPImage -Path output.jpg 
+```
