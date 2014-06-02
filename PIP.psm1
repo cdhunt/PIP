@@ -1,6 +1,6 @@
 $targetPath = $PSScriptRoot
 
-$dll = dir $targetPath -Recurse ImageProcessor.dll
+$dll = Get-ChildItem -Path $targetPath -Recurse ImageProcessor.dll
 
 if(!$dll) {
     
@@ -9,15 +9,19 @@ if(!$dll) {
         return
     }
 
-    pushd
-    cd $targetPath
+    Push-Location
+    Set-Location -Path $targetPath
     nuget install ImageProcessor
-    popd
+    Pop-Location
 }
 
-$dll = dir $targetPath -Recurse ImageProcessor.dll
+$dll = Get-ChildItem -Path $targetPath -Recurse ImageProcessor.dll
 
 Add-Type -Path $dll.FullName
+
+# TODO : Read EXIF http://blogs.technet.com/b/jamesone/archive/2007/07/13/exploring-photographic-exif-data-using-powershell-of-course.aspx
+# http://www.codeproject.com/Articles/27242/ExifTagCollection-An-EXIF-metadata-extraction-libr
+# http://www.codeproject.com/Articles/36342/ExifLib-A-Fast-Exif-Data-Extractor-for-NET Install-Package ExifLib
 
 <#
 .Synopsis
@@ -46,6 +50,8 @@ function Get-PIPImage
 
     Process
     {
+		#if($_) { $file = $_ }
+
 		if ([string]::IsNullOrWhiteSpace((Split-Path $Path)) -or (Split-Path $Path) -eq '.')
 		{
 			$Path = Join-Path -Path $pwd -ChildPath $Path
@@ -58,6 +64,88 @@ function Get-PIPImage
 		$null = $imageFactory.Load($Path)
 
         Write-Output -InputObject $imageFactory
+    }
+}
+
+<#
+.Synopsis
+   Change the size of the image.
+.DESCRIPTION
+   Change the size of the image to the either the absolute height and width 
+   or constrained to the height and width but maintaining aspect ratio.
+.PARAMETER InputObject
+   Specifies the objects to send down the pipeline. Enter a variable that contains the objects, or type a command or
+   expression that gets the objects.
+.PARAMETER Left
+   The [System.Float] defining the left coordinate of the crop layer to offset from the original image. When the crop 
+   mode is defined as [CropMode.Percentage] this becomes the percentage you want to remove from the left hand side 
+   of the image.
+.PARAMETER Top
+   The [System.Float] defining the top coordinate of the crop layer to offset from the original image. When the crop 
+   mode is defined as [CropMode.Percentage] this becomes the percentage you want to remove from the top of the image.
+.PARAMETER Right
+   The [System.Float] defining the width of the crop layer. When the crop mode is defined as [CropMode.Percentage] this 
+   becomes the percentage you want to remove from the right hand side of the image.
+.PARAMETER Bottom
+   The [System.Float] defining the height of the crop layer. When the crop mode is defined as [CropMode.Percentage] this 
+   becomes the percentage you want to remove from the bottom of the image.
+.PARAMETER Percentage
+   The default Crop Mode is Pixels. When the Percentage switch is selected this becomes the percentage you want to 
+   remove from the bottom of the image.
+.EXAMPLE
+   Get-ImageStream Capture.png | Set-ImageSize -Width 100 -Height 100
+.EXAMPLE
+   $images dir *.png | Get-PIPImage | Invoke-PIPImageCrop -Left 10 -Top 10 -Right 10 -Bottom 10 -Percetnage
+#>
+function Invoke-PIPImageCrop
+{
+    [CmdletBinding()]
+    [OutputType([ImageProcessor.ImageFactory])]
+    Param
+    (
+        [Parameter(Mandatory,ValueFromPipeline,Position=0)]
+        [ImageProcessor.ImageFactory]
+        $InputObject,
+
+        [Parameter(Mandatory,Position=1)]
+        [float]
+        $Left,
+
+        [Parameter(Mandatory,Position=2)]
+        [float]
+        $Top,
+
+		[Parameter(Mandatory,Position=3)]
+        [float]
+        $Right,
+
+		[Parameter(Mandatory,Position=4)]
+        [float]
+        $Botom,
+
+		[Parameter()]
+        [Switch]
+        $Percentage
+
+    )
+
+    Begin
+    {
+		$size = New-Object Drawing.Size($Width, $Height)
+
+        $CropMode = [ImageProcessor.Imaging.CropMode]::Pixels
+
+        if ($Percentage)
+        {
+            $CropMode = [ImageProcessor.Imaging.CropMode]::Percentage
+        }       
+
+		$layer = New-Object ImageProcessor.Imaging.ResizeLayer($Left, $Top, $Right, $Bottom, $CropMode)
+    }
+
+    Process
+    {
+		Write-Output -InputObject $_.Crop($layer)
     }
 }
 
@@ -87,7 +175,7 @@ function Get-PIPImage
 .EXAMPLE
    $images dir *.png | Get-PIPImage | Set-ImageSize -Width 200 -Height 100 -MaintainAspect
 #>
-function Set-PIPImageSize
+function Resize-PIPImage
 {
     [CmdletBinding()]
     [OutputType([ImageProcessor.ImageFactory])]

@@ -12,7 +12,7 @@
 RootModule = 'PIP.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.0'
+ModuleVersion = '1.1'
 
 # ID used to uniquely identify this module
 GUID = 'b9e874eb-e02f-45cd-a564-38a5915eb399'
@@ -72,7 +72,7 @@ FunctionsToExport = '*'
 CmdletsToExport = '*'
 
 # Variables to export from this module
-VariablesToExport = '*'
+VariablesToExport = ''
 
 # Aliases to export from this module
 AliasesToExport = '*'

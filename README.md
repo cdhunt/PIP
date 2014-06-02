@@ -25,9 +25,16 @@ Examples
 
 ```powershell
 Get-PIPImage source.bmp | 
-	Set-PIPImageSize -Width 100 -Height 100 | 
+	Resize-PIPImage -Width 100 -Height 100 | 
 	Add-PIPFilter -Filter blackwhite |
 	Add-PIPRoundedCorners |
 	Set-PIPFormat -Format Jpeg |
 	Save-PIPImage -Path output.jpg 
 ```
+
+Changes
+===
+
+### 1.1
+ - Changed `Set-PIPImageSize` to `Resize-PIPImage`
+ - Added Invoke-PIPImageCrop
