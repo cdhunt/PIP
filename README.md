@@ -17,7 +17,7 @@ Install
 To install in your personal modules folder (e.g. ~\Documents\WindowsPowerShell\Modules), run:
 
 ```powershell
-iex (new-object System.Net.WebClient).DownloadString('https://raw.github.com/cdhunt/PIP/master/Install.ps1')
+Install-Module -Name PIP
 ```
 
 Examples
@@ -31,10 +31,3 @@ Get-PIPImage source.bmp |
 	Set-PIPFormat -Format Jpeg |
 	Save-PIPImage -Path output.jpg 
 ```
-
-Changes
-===
-
-### 1.1
- - Changed `Set-PIPImageSize` to `Resize-PIPImage`
- - Added Invoke-PIPImageCrop
