@@ -14,7 +14,7 @@ This is not the first image manipulation module for PowerShell, but it's fast, f
 Install
 ===
 
-To install in your personal modules folder (e.g. ~\Documents\WindowsPowerShell\Modules), run:
+With the [PowerShellGet](https://www.powershellgallery.com/) module:
 
 ```powershell
 Install-Module -Name PIP
