@@ -12,7 +12,7 @@
 RootModule = 'PIP.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.1'
+ModuleVersion = '1.2'
 
 # ID used to uniquely identify this module
 GUID = 'b9e874eb-e02f-45cd-a564-38a5915eb399'
@@ -24,7 +24,7 @@ Author = 'Chris Hunt'
 CompanyName = 'No Company'
 
 # Copyright statement for this module
-Copyright = '© 2014 All rights reserved.'
+Copyright = '2014 All rights reserved.'
 
 # Description of the functionality provided by this module
 Description = 'Posh Wrapper for the .Net ImageProcessor library'

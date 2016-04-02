@@ -59,7 +59,7 @@ function Get-PIPImage
 
 		Write-Debug $Path
 
-        $imageFactory = New-Object ImageProcessor.ImageFactory
+        $imageFactory = New-Object ImageProcessor.ImageFactory -ArgumentList $true
 		
 		$null = $imageFactory.Load($Path)
 
@@ -400,18 +400,16 @@ function Set-PIPImageFormat
         $InputObject,
 
         [Parameter(Mandatory,Position=1)]
-        [Drawing.Imaging.ImageFormat]
-        $Format,
-
-        [Parameter(Position=2)]
-		[switch]
-        $IndexedFormat
+        [ValidateSet("Bitmap","Jpeg","Gif","Png","Tiff")]
+        [string]
+        $Format
     )
 
     Process
     {
+        $formatObject = New-Object "ImageProcessor.Imaging.Formats.$($Format)Format"
 
-        Write-Output -InputObject $_.Format($Format, $IndexedFormat)
+        Write-Output -InputObject $_.Format($formatObject)
     }
 }
 
